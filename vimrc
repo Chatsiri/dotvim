@@ -1,0 +1,1 @@
+/san01/home/chatsiri/.vimrc
