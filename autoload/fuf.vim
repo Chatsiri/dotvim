@@ -13,17 +13,14 @@ endif
 " GLOBAL FUNCTIONS {{{1
 
 
-" returns list of paths.
-" An argument for glob() is normalized in order to avoid a bug on Windows.
-function fuf#glob(expr)
-  " Substitutes "\", because on Windows, "**\" doesn't include ".\",
-  " but "**/" include "./". I don't know why.
-  return split(glob(substitute(a:expr, '\', '/', 'g')), "\n")
-endfunction
-
 "
 function fuf#countModifiedFiles(files, time)
   return len(filter(copy(a:files), 'getftime(expand(v:val)) > a:time'))
+endfunction
+
+"
+function fuf#countModifiedBuffers(buffers, time)
+  return len(filter(copy(a:buffers), 'getftime(expand(bufname(v:val))) > a:time'))
 endfunction
 
 "
@@ -256,7 +253,11 @@ endfunction
 
 "
 function fuf#enumExpandedDirsEntries(dir, exclude)
-  let entries = fuf#glob(a:dir . '*') + fuf#glob(a:dir . '.*')
+  " Substitutes "\" because on Windows, "**\" doesn't include ".\",
+  " but "**/" include "./". I don't know why.
+  let dirNormalized = substitute(a:dir, '\', '/', 'g')
+  let entries = split(glob(dirNormalized . "*" ), "\n") +
+        \       split(glob(dirNormalized . ".*"), "\n")
   " removes "*/." and "*/.."
   call filter(entries, 'v:val !~ ''\v(^|[/\\])\.\.?$''')
   call map(entries, 'fuf#makePathItem(v:val, "", 1)')
@@ -328,7 +329,7 @@ function fuf#defineLaunchCommand(CmdName, modeName, prefixInitialPattern, tempVa
     let preCmd = printf('call l9#tempvariables#setList(%s, %s) | ',
           \             string(s:TEMP_VARIABLES_GROUP), string(a:tempVars))
   endif
-  execute printf('command! -range -bang -narg=? %s %s call fuf#launch(%s, %s . <q-args>, len(<q-bang>))',
+  execute printf('command! -bang -narg=? %s %s call fuf#launch(%s, %s . <q-args>, len(<q-bang>))',
         \        a:CmdName, preCmd, string(a:modeName), a:prefixInitialPattern)
 endfunction
 
@@ -364,14 +365,9 @@ function fuf#launch(modeName, initialPattern, partialMatching)
   let s:runningHandler.lastCol = -1
   let s:runningHandler.windowRestoringCommand = winrestcmd()
   call s:runningHandler.onModeEnterPre()
-  " NOTE: updatetime is set, because in Buffer-Tag mode on Vim 7.3 on Windows,
-  " Vim keeps from triggering CursorMovedI for updatetime after system() is
-  " called. I don't know why.
   call fuf#setOneTimeVariables(
-        \  ['&completeopt', 'menuone'],
-        \  ['&ignorecase', 0],
-        \  ['&updatetime', 10],
-        \ )
+        \ ['&completeopt', 'menuone'],
+        \ ['&ignorecase', 0],)
   if s:runningHandler.getPreviewHeight() > 0
     call fuf#setOneTimeVariables(
           \ ['&cmdheight', s:runningHandler.getPreviewHeight() + 1])
@@ -492,7 +488,7 @@ endfunction
 "=============================================================================
 " LOCAL FUNCTIONS/VARIABLES {{{1
 
-let s:TEMP_VARIABLES_GROUP = expand('<sfile>:p')
+let s:TEMP_VARIABLES_GROUP = "FuzzyFinder"
 let s:ABBR_SNIP_MASK = '...'
 let s:OPEN_TYPE_CURRENT = 1
 let s:OPEN_TYPE_SPLIT   = 2
