@@ -22,7 +22,7 @@ function l9#isCompatible(ver)
   return (s:L9_VERSION_COMPATIBLE <= a:ver && a:ver <= s:L9_VERSION_CURRENT)
 endfunction
 
-let s:VERSION_FACTOR = str2float('0.01')
+let s:VERSION_FACTOR = str2float('1 / 100')
 
 " returns false if the caller script should finish.
 " l9Version: same rule as v:version

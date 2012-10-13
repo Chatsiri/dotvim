@@ -10,12 +10,17 @@ endif
 
 " }}}1
 "=============================================================================
-" GLOBAL FUNCTIONS {{{1
+i" GLOBAL FUNCTIONS {{{1
 
 
 "
 function fuf#countModifiedFiles(files, time)
   return len(filter(copy(a:files), 'getftime(v:val) > a:time'))
+endfunction
+
+"
+function fuf#countModifiedBuffers(buffers, time)
+  return len(filter(copy(a:buffers), 'getftime(expand(bufname(v:val))) > a:time'))
 endfunction
 
 "
@@ -317,9 +322,21 @@ function fuf#getModeNames()
 endfunction
 
 "
-function fuf#defineLaunchCommand(CmdName, modeName, prefixInitialPattern)
-  execute printf('command! -bang -narg=? %s call fuf#launch(%s, %s . <q-args>, len(<q-bang>))',
-        \        a:CmdName, string(a:modeName), a:prefixInitialPattern)
+" <<<<<<< HEAD
+" function fuf#defineLaunchCommand(CmdName, modeName, prefixInitialPattern)
+"  execute printf('command! -bang -narg=? %s call fuf#launch(%s, %s . <q-args>, len(<q-bang>))',
+"        \        a:CmdName, string(a:modeName), a:prefixInitialPattern)
+" =======
+function fuf#defineLaunchCommand(CmdName, modeName, prefixInitialPattern, tempVars)
+  if empty(a:tempVars)
+    let preCmd = ''
+  else
+    let preCmd = printf('call l9#tempvariables#setList(%s, %s) | ',
+          \             string(s:TEMP_VARIABLES_GROUP), string(a:tempVars))
+  endif
+  execute printf('command! -bang -narg=? %s %s call fuf#launch(%s, %s . <q-args>, len(<q-bang>))',
+        \        a:CmdName, preCmd, string(a:modeName), a:prefixInitialPattern)
+" >>>>>>> 2a2f2f7ead567a284e85a838d8da8d437e53e27f
 endfunction
 
 "
@@ -720,14 +737,14 @@ function s:deactivateFufBuffer()
   call l9#tempbuffer#close(s:FUF_BUF_NAME)
 endfunction
 
-" }}}1
+" }}i}1
 "=============================================================================
-" s:handlerBase {{{1
+" s:hiandlerBase {{{1
 
 let s:handlerBase = {}
 
 "-----------------------------------------------------------------------------
-" PURE VIRTUAL FUNCTIONS {{{2
+" PUREi VIRTUAL FUNCTIONS {{{2
 "
 " "
 " s:handler.getModeName()
@@ -1026,7 +1043,7 @@ endfunction
 
 call s:checkDataFileCompatibility()
 
-" }}}1
+i" }}}1
 "=============================================================================
 " vim: set fdm=marker:
 

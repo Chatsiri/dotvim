@@ -39,7 +39,11 @@ endfunction
 
 "
 function fuf#coveragefile#onInit()
+<<<<<<< HEAD
   call fuf#defineLaunchCommand('FufCoverageFile', s:MODE_NAME, '""')
+=======
+  call fuf#defineLaunchCommand('FufCoverageFile', s:MODE_NAME, '""', [])
+>>>>>>> 2a2f2f7ead567a284e85a838d8da8d437e53e27f
   command! -bang -narg=0        FufCoverageFileRegister call s:registerCoverage()
   command! -bang -narg=?        FufCoverageFileChange call s:changeCoverage(<q-args>)
 endfunction
@@ -122,7 +126,11 @@ function s:changeCoverage(name)
   endif
   call fuf#setOneTimeVariables(['g:fuf_coveragefile_globPatterns',
         \                       coverages[0].patterns])
+<<<<<<< HEAD
   call feedkeys(":FufCoverageFile\<CR>", 'n')
+=======
+  FufCoverageFile
+>>>>>>> 2a2f2f7ead567a284e85a838d8da8d437e53e27f
 endfunction
 
 " }}}1

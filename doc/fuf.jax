@@ -261,6 +261,34 @@ Tag モード ~
         noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 <
 
+<<<<<<< HEAD
+=======
+                                                          *fuf-buffertag-mode*
+Buffer-Tag モード ~
+
+このモードはカレントバッファまたは全バッファのタグを選択してその定義へジャンプ
+するインターフェースを提供します。
+
+タグのリストはFuzzyFinderの起動時にその場で作成されるので、前もってtagsファイ
+ルを作成する必要はありません。
+
+|FufBufferTag|はカレントバッファを対象にし、|FufBufferTagAll|は全バッファを対
+象にします。
+
+以下は <C-]> を置き換えるマッピングです:
+>
+        nnoremap <silent> <C-]> :FufBufferTagWithCursorWord!<CR>
+        vnoremap <silent> <C-]> <Esc>:FufBufferTagAllWithSelectedText!<CR>
+<
+または
+>
+        nnoremap <silent> <C-]> :FufBufferTagAllWithCursorWord!<CR>
+        vnoremap <silent> <C-]> <Esc>:FufBufferTagAllWithSelectedText!<CR>
+<
+このモードは taglist.vim (vimscript #273) にインスパイアされました。コードも参
+考にしています。
+
+>>>>>>> 2a2f2f7ead567a284e85a838d8da8d437e53e27f
                                                          *fuf-taggedfile-mode*
 Tagged-File モード ~
 
@@ -1286,6 +1314,16 @@ vimrc の例                                                 *fuf-vimrc-example*
   nnoremap <silent> st     :FufTag<CR>
   nnoremap <silent> sT     :FufTag!<CR>
   noremap  <silent> s]     :FufTagWithCursorWord!<CR>
+<<<<<<< HEAD
+=======
+  nnoremap <silent> s,     :FufBufferTag<CR>
+  nnoremap <silent> s<     :FufBufferTag!<CR>
+  vnoremap <silent> s,     <Esc>:FufBufferTagWithSelectedText!<CR>
+  nnoremap <silent> s.     :FufBufferTagAll<CR>
+  nnoremap <silent> s>     :FufBufferTagAll!<CR>
+  vnoremap <silent> s.     <Esc>:FufBufferTagAllWithSelectedText!<CR>
+  nnoremap <silent> s}     :FufBufferTagAllWithCursorWord!<CR>
+>>>>>>> 2a2f2f7ead567a284e85a838d8da8d437e53e27f
   nnoremap <silent> sg     :FufTaggedFile<CR>
   nnoremap <silent> sG     :FufTaggedFile!<CR>
   nnoremap <silent> so     :FufJumpList<CR>
